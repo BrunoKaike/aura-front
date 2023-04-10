@@ -8,7 +8,7 @@
       "hash": "2a728b401a9f7687dffec4f354e27ddd3d613fa5"
     },
     "com.unity.collab-proxy": {
-      "version": "2.0.1",
+      "version": "2.0.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -112,7 +112,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.7.4",
+      "version": "1.7.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
