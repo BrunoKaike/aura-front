@@ -41,25 +41,11 @@ public class WebTalker : MonoBehaviour
     }
   WebSocket websocket;
   string newMessage;
+  string server = "://localhost:3000";
   // Start is called before the first frame update
-  async void Start()
+   void Start()
   {
-    websocket = new WebSocket("ws://localhost:3000");
-
-    /*websocket.OnOpen += () =>
-    {
-      Debug.Log("Connection open!");
-    };
-
-    websocket.OnError += (e) =>
-    {
-      Debug.Log("Error! " + e);
-    };
-
-    websocket.OnClose += (e) =>
-    {
-      Debug.Log("Connection closed!");
-    };*/
+    websocket = new WebSocket("ws" +server);
 
     websocket.OnMessage += (sender, bytes) =>
     {
@@ -68,8 +54,6 @@ public class WebTalker : MonoBehaviour
 
       if(JsonUtility.FromJson<response>(stringMessage).type == "introGame"){
         HandleEntrar(stringMessage);
-      }else if(JsonUtility.FromJson<response>(stringMessage).type == "startGame"){
-        HandleIniciar(stringMessage);
       }else if(JsonUtility.FromJson<response>(stringMessage).type == "atGame"){
         
       }else{
@@ -78,7 +62,7 @@ public class WebTalker : MonoBehaviour
       }
     };
     // waiting for messages
-    //await websocket.Connect();
+     websocket.Connect();
   }
 
   void Update()
@@ -87,15 +71,14 @@ public class WebTalker : MonoBehaviour
       websocket.Send(newMessage);
     #endif
   }
-    public async void SendCodigo(string name,string codigo){
+    public  void Login(string username,string senha){
         if (websocket != null)
         {
-          GameManager.Instance.codigo = codigo;
-          GameManager.Instance.nome = name;
-          String message = @"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""nameId"" : ";
-          message += @"""" + codigo + @""", ""name"" : ";
-          message += @"""" + name + @""""+"}";
-          Debug.Log("menssagem: "  + message);
+          websocket.Origin =server + "/user/login";
+          String message = @"{ ""username"" : " + username + ",";
+          message += @"""password: "" " + senha + " ,";
+          message += "}";
+          Debug.Log("menssagem Login: "  + message);
            websocket.Send(message);
           //await websocket.SendText(@"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""position"" : ""variable"", ""idGame"": ""token"" }");
         }
@@ -104,58 +87,30 @@ public class WebTalker : MonoBehaviour
       introGame data = JsonUtility.FromJson<introGame>(resposta);
       if (data.data == "success")
       {
-        GameManager.Instance.playerCheckpoint = data.checkpoint;
-        GameManager.Instance.Espera();
+      //  GameManager.Instance.playerCheckpoint = data.checkpoint;
+      //  GameManager.Instance.Espera();
       }else{
         Debug.Log(data.data);
       }
     }
-    public async void SendComecar(){
+    public  void SendComecar(){
         if (websocket != null)
         {
             String message = @"{ ""inGame"" : ""true"", ""type"" : ""startGame"", ""id"" : ";
-            message += @"""" + GameManager.Instance.codigo + @""" }";
+         //   message += @"""" + GameManager.Instance.codigo + @""" }";
             Debug.Log("menssagem: "  + message);
              websocket.Send(message);
             //await websocket.SendText(@"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""position"" : ""variable"", ""idGame"": ""token"" }");
         }
     }
-    public void HandleIniciar(string resposta){
-      startGame data = JsonUtility.FromJson<startGame>(resposta);
-      if (data.data == GameManager.Instance.codigo)
-      {
-        Debug.Log("entrou no start");
-        GameManager.Instance.jogadorId = data.player;
-        if (data.player1 > -1)
-        {
-          GameManager.Instance.Inicio(data.player1);
-        }
-        if (data.player2 > -1)
-        {
-          GameManager.Instance.Inicio(data.player2);
-        }
-        if (data.player3 > -1)
-        {
-          GameManager.Instance.Inicio(data.player3);
-        }
-        if (data.player4 > -1)
-        {
-          GameManager.Instance.Inicio(data.player4);
-        }
-        Debug.Log("desativou");
-        GameManager.Instance.TelaEspera.SetActive(false);
-      }else{
-        Debug.Log(data.data);
-      }
-    }
-    public async void SendWebSocketEnterRoom()
+    public  void SendWebSocketEnterRoom()
     {
         if (websocket != null)
         {
              websocket.Send(@"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""position"" : ""variable"", ""idGame"": ""token"" }");
         }
     }
-  private async void OnApplicationQuit()
+  private  void OnApplicationQuit()
   {
      websocket.Close();
   }
