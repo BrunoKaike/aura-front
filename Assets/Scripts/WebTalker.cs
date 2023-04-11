@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using NativeWebSocket;
+using WebSocketSharp; 
 public class response 
 {
     public string type;
@@ -40,13 +40,13 @@ public class WebTalker : MonoBehaviour
         _instance = this;
     }
   WebSocket websocket;
-
+  string newMessage;
   // Start is called before the first frame update
   async void Start()
   {
     websocket = new WebSocket("ws://localhost:3000");
 
-    websocket.OnOpen += () =>
+    /*websocket.OnOpen += () =>
     {
       Debug.Log("Connection open!");
     };
@@ -59,12 +59,12 @@ public class WebTalker : MonoBehaviour
     websocket.OnClose += (e) =>
     {
       Debug.Log("Connection closed!");
-    };
+    };*/
 
-    websocket.OnMessage += (bytes) =>
+    websocket.OnMessage += (sender, bytes) =>
     {
       Debug.Log("OnMessage!");
-      string stringMessage = System.Text.Encoding.UTF8.GetString(bytes);
+      string stringMessage = bytes.Data;
 
       if(JsonUtility.FromJson<response>(stringMessage).type == "introGame"){
         HandleEntrar(stringMessage);
@@ -78,17 +78,17 @@ public class WebTalker : MonoBehaviour
       }
     };
     // waiting for messages
-    await websocket.Connect();
+    //await websocket.Connect();
   }
 
   void Update()
   {
     #if !UNITY_WEBGL || UNITY_EDITOR
-      websocket.DispatchMessageQueue();
+      websocket.Send(newMessage);
     #endif
   }
     public async void SendCodigo(string name,string codigo){
-        if (websocket.State == WebSocketState.Open)
+        if (websocket != null)
         {
           GameManager.Instance.codigo = codigo;
           GameManager.Instance.nome = name;
@@ -96,7 +96,7 @@ public class WebTalker : MonoBehaviour
           message += @"""" + codigo + @""", ""name"" : ";
           message += @"""" + name + @""""+"}";
           Debug.Log("menssagem: "  + message);
-          await websocket.SendText(message);
+           websocket.Send(message);
           //await websocket.SendText(@"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""position"" : ""variable"", ""idGame"": ""token"" }");
         }
     }
@@ -111,12 +111,12 @@ public class WebTalker : MonoBehaviour
       }
     }
     public async void SendComecar(){
-        if (websocket.State == WebSocketState.Open)
+        if (websocket != null)
         {
             String message = @"{ ""inGame"" : ""true"", ""type"" : ""startGame"", ""id"" : ";
             message += @"""" + GameManager.Instance.codigo + @""" }";
             Debug.Log("menssagem: "  + message);
-            await websocket.SendText(message);
+             websocket.Send(message);
             //await websocket.SendText(@"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""position"" : ""variable"", ""idGame"": ""token"" }");
         }
     }
@@ -150,35 +150,14 @@ public class WebTalker : MonoBehaviour
     }
     public async void SendWebSocketEnterRoom()
     {
-        if (websocket.State == WebSocketState.Open)
+        if (websocket != null)
         {
-            await websocket.SendText(@"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""position"" : ""variable"", ""idGame"": ""token"" }");
+             websocket.Send(@"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""position"" : ""variable"", ""idGame"": ""token"" }");
         }
     }
-  public async void SendWebSocketBomb()
-  {
-    if (websocket.State == WebSocketState.Open)
-    {
-      await websocket.SendText(@"{ ""nome"" : ""Jose Carlos"", ""sobrenome"" : ""Macoratti"", ""email"": ""macoratti@yahoo.com"" }");
-    }
-  }
-  public async void SendWebSocketMove()
-  {
-    if (websocket.State == WebSocketState.Open)
-    {
-      await websocket.SendText(@"{ ""nome"" : ""Jose Carlos"", ""sobrenome"" : ""Macoratti"", ""email"": ""macoratti@yahoo.com"" }");
-    }
-  }
-  public async void SendWebSocketDamage()
-  {
-    if (websocket.State == WebSocketState.Open)
-    {
-      await websocket.SendText(@"{ ""nome"" : ""Jose Carlos"", ""sobrenome"" : ""Macoratti"", ""email"": ""macoratti@yahoo.com"" }");
-    }
-  }
   private async void OnApplicationQuit()
   {
-    await websocket.Close();
+     websocket.Close();
   }
 
 }
