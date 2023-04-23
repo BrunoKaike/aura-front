@@ -7,6 +7,10 @@ using UnityEngine;
 public class SimpleSonarShader_Object : MonoBehaviour
 {
 
+    //timer
+    private float tempoMinimoEntreColisoes = 0.4f; // tempo mínimo entre as colisões
+    private float tempoUltimaColisao = 0.0f; // tempo da última colisão
+
     // All the renderers that will have the sonar data sent to their shaders.
     private Renderer[] ObjectRenderers;
 
@@ -84,8 +88,21 @@ public class SimpleSonarShader_Object : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        // Start sonar ring from the contact point
-        StartSonarRing(collision.contacts[0].point, collision.impulse.magnitude / 10.0f);
+            // Start sonar ring from the contact point
+            StartSonarRing(collision.contacts[0].point, collision.impulse.magnitude / 10.0f);
+
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (Time.time - tempoUltimaColisao > tempoMinimoEntreColisoes)
+        {
+            // Start sonar ring from the contact point
+            StartSonarRing(collision.contacts[0].point, collision.impulse.magnitude / 2.0f);
+
+            tempoUltimaColisao = Time.time;
+        }
+        
     }
 
     private void OnDestroy()
