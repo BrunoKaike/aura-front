@@ -41,11 +41,20 @@ public class WebTalker : MonoBehaviour
     }
   WebSocket websocket;
   string newMessage;
-  string server = "://localhost:3000";
+  string server = "://localhost:3000/";
   // Start is called before the first frame update
    void Start()
   {
     websocket = new WebSocket("ws" +server);
+    websocket.OnOpen += (sender, args) =>
+    {
+      Debug.Log("Open!");
+    };
+
+    websocket.OnClose += (sender, args) =>
+    {
+      Debug.Log("Closed!");
+    };
 
     websocket.OnMessage += (sender, bytes) =>
     {
@@ -67,14 +76,14 @@ public class WebTalker : MonoBehaviour
 
   void Update()
   {
-    #if !UNITY_WEBGL || UNITY_EDITOR
+    /*#if !UNITY_WEBGL || UNITY_EDITOR
       websocket.Send(newMessage);
-    #endif
+    #endif*/
   }
     public  void Login(string username,string senha){
         if (websocket != null)
         {
-          websocket.Origin =server + "/user/login";
+          websocket.Origin ="ws" + server + "/user/login";
           String message = @"{ ""username"" : " + username + ",";
           message += @"""password: "" " + senha + " ,";
           message += "}";
