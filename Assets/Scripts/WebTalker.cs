@@ -83,9 +83,9 @@ public class WebTalker : MonoBehaviour
     public  void Login(string username,string senha){
         if (websocket != null)
         {
-          websocket.Origin ="ws" + server + "/user/login";
+         // websocket.Origin ="ws" + server + "user/login";
           String message = @"{ ""username"" : " + username + ",";
-          message += @"""password: "" " + senha + " ,";
+          message += @"""password: "" " + senha;
           message += "}";
           Debug.Log("menssagem Login: "  + message);
            websocket.Send(message);

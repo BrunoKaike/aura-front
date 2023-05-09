@@ -13,7 +13,6 @@ public class Login : MonoBehaviour
 
     public void setUsername(string username){
         this.username = username;
-        Debug.Log(username);
     }
     
     public void setPassword(string password){
