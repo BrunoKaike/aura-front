@@ -1,15 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class FriendItem : MonoBehaviour
 {
-    public Text friendNameText;
+    public TMP_Text username;
     public Button acceptButton;
     public Button rejectButton;
 
     public void Initialize(string friendName)
     {
-        friendNameText.text = friendName;
+        username.text = friendName;
         acceptButton.onClick.AddListener(() => AcceptFriend(friendName));
         rejectButton.onClick.AddListener(() => RejectFriend(friendName));
     }
