@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 using WebSocketSharp; 
 public class response 
@@ -27,6 +28,7 @@ public class startGame
 public class WebTalker : MonoBehaviour
 {
     private static WebTalker _instance;
+    UnityWebRequest uwr;
     public static WebTalker Instance{
         get {
             if (_instance == null)
@@ -72,6 +74,7 @@ public class WebTalker : MonoBehaviour
     };
     // waiting for messages
      websocket.Connect();
+
   }
 
   void Update()
@@ -80,18 +83,41 @@ public class WebTalker : MonoBehaviour
       websocket.Send(newMessage);
     #endif*/
   }
-    public  void Login(string username,string senha){
-        if (websocket != null)
-        {
-         // websocket.Origin ="ws" + server + "user/login";
-          String message = @"{ ""username"" : " + username + ",";
-          message += @"""password: "" " + senha;
-          message += "}";
-          Debug.Log("menssagem Login: "  + message);
-           websocket.Send(message);
+
+    public void Login(string username,string senha){
+
+          //websocket.Origin ="ws" + server + "user/login";
+          String message = @"{ ""username"" : " + "\"" + username + "\",";
+          message += @"""password"" : """ + senha + "\"}";
+
+          StartCoroutine(postRequest("http" + server + "user/login", message));
+          
+          //websocket.Send(message);
           //await websocket.SendText(@"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""position"" : ""variable"", ""idGame"": ""token"" }");
-        }
     }
+
+    IEnumerator postRequest(string url, string json){
+
+          uwr = new UnityWebRequest(url,"POST");
+          byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
+          Debug.Log(System.Text.Encoding.UTF8.GetString(jsonToSend));
+          uwr.uploadHandler = new UploadHandlerRaw(jsonToSend) as UploadHandler;
+          uwr.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+          uwr.SetRequestHeader("Content-Type", "application/json");
+
+          yield return uwr.SendWebRequest();
+
+          if (uwr.isNetworkError)
+          {
+              Debug.Log("Error While Sending: " + uwr.error);
+          }
+          else
+          {
+              Debug.Log("Received: " + uwr.downloadHandler.text);
+          }
+
+    }
+
     public void HandleEntrar(string resposta){
       introGame data = JsonUtility.FromJson<introGame>(resposta);
       if (data.data == "success")

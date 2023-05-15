@@ -2,24 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Login : MonoBehaviour
 {
-     public string username;
-    public string password;
+    public TMP_InputField username;
+    public TMP_InputField password;
     void Start()
     {
     }
 
-    public void setUsername(string username){
-        this.username = username;
-    }
-    
-    public void setPassword(string password){
-        this.password = password;
-    }
-
     public void sendCredentials(){
-        WebTalker.Instance.Login(username, password);
+        WebTalker.Instance.Login(username.text, password.text);
     }
 }
