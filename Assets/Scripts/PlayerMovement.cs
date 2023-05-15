@@ -9,12 +9,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 5f;
     public float groundDistance = 0.2f;
     public LayerMask groundMask;
-    public float ballSpeedMultiplier = 2f;
     private Animator animator;
-
-    private Rigidbody ballRigidbody;
-    private Collider ballCollider;
-    private bool hasBall = false;
     private Rigidbody rb;
     private bool isGrounded;
 
@@ -58,42 +53,6 @@ public class PlayerMovement : MonoBehaviour
             
         }
 
-        if(!hasBall){
-
-            animator.SetBool("isPassing", false);
-
-        }
-
-        if (hasBall && Input.GetKeyDown(KeyCode.C))
-        {
-            
-            animator.SetBool("isPassing", true);
-            //Debug.Log("Passando");
-            ballRigidbody.useGravity = true;
-            ballRigidbody.isKinematic = false;
-
-            transform.Find("SoccerBall").parent = null;
-            ballCollider.gameObject.transform.SetParent(null);
-            ballRigidbody.AddForce(transform.forward * 10f, ForceMode.Impulse);
-            ballCollider.enabled = true;
-            hasBall = false;
-            
-        }
     }
 
-
-    private void OnTriggerEnter(Collider other)
-    {
-
-        if (other.gameObject.CompareTag("Ball") && !hasBall)
-        {
-            ballCollider = other;
-            ballRigidbody = other.gameObject.GetComponent<Rigidbody>();
-            ballRigidbody.useGravity = false;
-            ballRigidbody.isKinematic = true;
-            ballCollider.enabled = false;
-            ballCollider.gameObject.transform.SetParent(transform);
-            hasBall = true;
-        }
-    }
 }
