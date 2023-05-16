@@ -98,6 +98,21 @@ public class WebTalker : MonoBehaviour
           //await websocket.SendText(@"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""position"" : ""variable"", ""idGame"": ""token"" }");
     }
 
+    public void Signup(string username,string senha, string email, string nickname){
+
+          //websocket.Origin ="ws" + server + "user/login";
+          String message = @"{ ""username"" : " + "\"" + username + "\",";
+          message += @"""password"" : """ + senha + "\",";
+          message += @"""email"" : """ + email + "\",";
+          message += @"""nickname"" : """ + nickname + "\"}";
+          
+
+          StartCoroutine(postRequest("http" + server + "user/signup", message));
+          
+          //websocket.Send(message);
+          //await websocket.SendText(@"{ ""inGame"" : ""true"", ""type"" : ""introGame"", ""position"" : ""variable"", ""idGame"": ""token"" }");
+    }
+
     IEnumerator postRequest(string url, string json){
 
           uwr = new UnityWebRequest(url,"POST");
