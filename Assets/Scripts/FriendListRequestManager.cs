@@ -3,48 +3,28 @@ using UnityEngine;
 using UnityEngine.Networking;
 using static TypesObjects;
 using System.Collections;
-using System.Text.Json;
 
-using UnityEngine;
-
-public static class JsonHelper
-{
-    public static List<T> FromJson<T>(string jsonString)
-    {
-        string newJsonString = "{\"items\":" + jsonString + "}";
-        Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(newJsonString);
-        return wrapper.items;
-    }
-
-    [System.Serializable]
-    private class Wrapper<T>
-    {
-        public List<T> items;
-    }
-}
-
-
-public class FriendListManager : MonoBehaviour
+public class FriendListRequestManager : MonoBehaviour
 {
     public GameObject friendItemPrefab;
     public Transform friendListContainer;
     string server = "://localhost:3000/";
     
-    public List<Friend> friendList = new List<Friend>();
+    private List<FriendRequestReceiver> friendRequestList = new List<FriendRequestReceiver>();
 
     private void Start()
     {
-        StartCoroutine(GetRequest("http" + server + "user/friends"));
+        StartCoroutine(GetRequest("http" + server + "user/pendingFriendshipRequests"));
         
     }
 
     private void CreateFriendList()
     {
-        foreach (Friend friend in friendList)
+        foreach (FriendRequestReceiver friendRequest in friendRequestList)
         {
             GameObject friendItem = Instantiate(friendItemPrefab, friendListContainer);
-            FriendItem friendItemScript = friendItem.GetComponent<FriendItem>();
-            friendItemScript.Initialize(friend.nickname);
+            FriendRequestItem friendItemScript = friendItem.GetComponent<FriendRequestItem>();
+            friendItemScript.Initialize(friendRequest.sender, friendRequest.requestId);
         }
     }
 
@@ -60,10 +40,17 @@ public class FriendListManager : MonoBehaviour
                 Debug.Log("Error While Getting: " + webRequest.error);
             }
             else {
-                string sessionJson = webRequest.downloadHandler.text;
-                Debug.Log("Received: " + webRequest.downloadHandler.text);
+                string friendRequestsJson = webRequest.downloadHandler.text;
                 
-                friendList = JsonHelper.FromJson<Friend>(sessionJson);
+                DataObject dataObject = JsonUtility.FromJson<DataObject>(friendRequestsJson);
+
+                // Get the list of receiver objects
+                FriendRequestReceiver[] receiverList = dataObject.receiver;
+
+                foreach (var ro in receiverList)
+                {
+                    friendRequestList.Add(ro);
+                }
 
                 Debug.Log("Received: " + webRequest.downloadHandler.text);
                 CreateFriendList();

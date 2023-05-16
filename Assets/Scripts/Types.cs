@@ -10,14 +10,25 @@ public class Session
 }
 
 [System.Serializable]
-public class FriendRequest
+public class DataObject
 {
-    public int id;
-    public string senderId;
-    public string receiverId;
-    public string status;
+    public FriendRequestReceiver[] receiver;
+}
+
+[System.Serializable]
+public class FriendRequestReceiver
+{
+    public string sender;
+    public DateTime sentAt;
+    public string requestId;
+}
+
+[System.Serializable]
+public class Friend
+{
     public DateTime createdAt;
     public DateTime updatedAt;
+    public string nickname;
 }
 
 public class TypesObjects : MonoBehaviour

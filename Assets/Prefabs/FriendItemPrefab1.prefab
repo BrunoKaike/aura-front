@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8223752710432914060}
   - component: {fileID: 1510620380255776656}
   m_Layer: 5
-  m_Name: FriendItemPrefab
+  m_Name: FriendItemPrefab1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
