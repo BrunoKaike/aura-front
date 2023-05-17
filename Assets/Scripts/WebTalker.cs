@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using static TypesObjects;
-using WebSocketSharp; 
-
+using WebSocketSharp;
 
 public class response 
 {
@@ -131,13 +130,15 @@ public class WebTalker : MonoBehaviour
           else
           {
               if(url == "http" + server + "user/login"){
-
+                
                 string sessionJson = uwr.downloadHandler.text;
                 Session data = JsonUtility.FromJson<Session>(sessionJson);
                 Debug.Log("Valor da variável no JSON: " + data.sessionId);
-                string sessionID = data.sessionId; 
-                PlayerPrefs.SetString("SessionID", sessionID); 
-                PlayerPrefs.Save();
+                if(data.sessionId != ""){
+                  string sessionID = data.sessionId; 
+                  PlayerPrefs.SetString("SessionID", sessionID); 
+                  PlayerPrefs.Save();
+                }
 
               }
               Debug.Log("Received: " + uwr.downloadHandler.text);

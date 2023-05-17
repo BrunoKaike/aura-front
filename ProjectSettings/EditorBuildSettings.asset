@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: "Assets/Scenes/TelaDeApresenta\xE7\xE3o.unity"
+    guid: e50d93ccfae655b409ff9326885b83c1
+  - enabled: 1
+    path: Assets/Scenes/Login.unity
+    guid: e89bb2b8d8ec69143add5ed936ab29c6
+  - enabled: 1
+    path: Assets/Scenes/Cadastro.unity
+    guid: 097383dc60b8c0f48a53c9ad34f63d9d
+  - enabled: 1
+    path: "Assets/Scenes/TelaDeUsu\xE1rio.unity"
+    guid: e9603dce622ea034691e625d21e6b482
   m_configObjects: {}

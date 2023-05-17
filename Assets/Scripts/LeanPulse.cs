@@ -12,20 +12,6 @@ namespace Lean.Gui
 	public class LeanPulse : MonoBehaviour
 	{
 
-		private static LeanPulse _instance;
-    public static LeanPulse Instance{
-        get {
-            if (_instance == null)
-            {   
-                Debug.LogError("LeanPulse is null");
-            }
-            return _instance;
-        }
-    }
-    private void Awake(){
-        _instance = this;
-    }
-
 		[System.Serializable] public class IntEvent : UnityEvent<int> {}
 
 		/// <summary>This stores all active and enabled LeanPulse instances, so you can manually pulse them by name from anywhere.</summary>
