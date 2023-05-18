@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using static TypesObjects;
 using WebSocketSharp;
+using UnityEngine.SceneManagement;
 
 public class response 
 {
@@ -91,6 +92,9 @@ public class WebTalker : MonoBehaviour
           String message = @"{ ""username"" : " + "\"" + username + "\",";
           message += @"""password"" : """ + senha + "\"}";
 
+          PlayerPrefs.SetString("SessionUsername", username); 
+          PlayerPrefs.Save();
+
           StartCoroutine(postRequest("http" + server + "user/login", message));
           
           //websocket.Send(message);
@@ -103,8 +107,7 @@ public class WebTalker : MonoBehaviour
           String message = @"{ ""username"" : " + "\"" + username + "\",";
           message += @"""password"" : """ + senha + "\",";
           message += @"""email"" : """ + email + "\",";
-          message += @"""nickname"" : """ + nickname + "\"}";
-          
+          message += @"""nickname"" : """ + nickname + "\"}";     
 
           StartCoroutine(postRequest("http" + server + "user/signup", message));
           
@@ -138,6 +141,10 @@ public class WebTalker : MonoBehaviour
                   string sessionID = data.sessionId; 
                   PlayerPrefs.SetString("SessionID", sessionID); 
                   PlayerPrefs.Save();
+                                
+                  SceneManager.LoadScene("TelaDeUsuário");
+
+
                 }
 
               }

@@ -794,7 +794,7 @@ MonoBehaviour:
   m_SecondaryOrder: 0
   m_Pos: {x: 0, y: 0}
   m_TextAsAudio: {fileID: 0}
-  m_Prefix: Type your e-mail
+  m_Prefix: Type your username
   m_PrefixIsLocalizationKey: 0
   m_PrefixIsPostFix: 0
   m_FilterText: 1
